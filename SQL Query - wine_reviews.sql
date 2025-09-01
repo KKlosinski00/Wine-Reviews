@@ -8,7 +8,7 @@
 
 	***W LINIJCE 323 NALE¯Y WPROWADZIÆ ŒCIE¯KÊ DO PLIKU JSON ZAWIERAJ¥CEGO RECENZJE***
 
-	PO PIERWSZYM WPROWADZENIU DANYCH DO TABEL, PROCEDURÊ MOZNA POWTÓRZYÆ AKTUALIZUJ¥C "proUpdateData" ZMIENIAJ¥C NAZWÊ PLIKU NA "winemag-data-130k-V5S",
+	PO PIERWSZYM WPROWADZENIU DANYCH DO TABEL, PROCEDURÊ MOZNA POWTÓRZYÆ AKTUALIZUJ¥C "sp_UpdateData" ZMIENIAJ¥C NAZWÊ PLIKU W LINIJCE 323 NA "winemag-data-130k-V5S",
 	SYMULUJ¥C SCENARIUSZ POBRANIA NOWYCH DANYCH I AKTUALIZACJI BAZY DANYCH.
 */
 -----------------------------------------------------------------------------------	Tworzenie bazy danych
@@ -104,8 +104,8 @@ CREATE TABLE dimWineries
 )
 GO
 
------------------------------------------------------------------------------------	Procedura wyci¹gania danych do tabel wymiarów - proDim
-CREATE PROCEDURE proDim AS
+-----------------------------------------------------------------------------------	Procedura wyci¹gania danych do tabel wymiarów - sp_CreateDimWine
+CREATE PROCEDURE sp_CreateDimWine AS
 
 DROP TABLE IF EXISTS #dimOrigin
 SELECT
@@ -310,7 +310,7 @@ CREATE TABLE fctWine_reviews
 GO
 
 -------------------------------------------------------------------------Zrzut  danych do STG----------------------------------------------------------------------------
-CREATE PROCEDURE proUpdateData AS
+CREATE PROCEDURE sp_UpdateData AS
 
 TRUNCATE TABLE  stg.Winemag_data;
 
@@ -414,7 +414,7 @@ INTO #Unique_SOURCE_2 FROM #Unique_SOURCE_1;
 
 --------------------------------- Aktualizacja DIM
 
-EXEC proDim
+EXEC sp_CreateDimWine
 
 --------------------------------- JOIN - przypisanie numerów ID
 DROP TABLE IF EXISTS #Wine_reviews
@@ -513,4 +513,4 @@ AND TARGET.wine_ID = SOURCE.wine_ID
 SELECT * FROM fctWine_reviews
 GO
 
-EXEC proUpdateData
+EXEC sp_UpdateData
